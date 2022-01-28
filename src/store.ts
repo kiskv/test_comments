@@ -1,7 +1,10 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
+import commentsReducer from './features/comments/comments-slice';
 
 export const store = configureStore({
-  reducer: {},
+  reducer: {
+    comments: commentsReducer,
+  },
 });
 
 export type AppDispatch = typeof store.dispatch;
