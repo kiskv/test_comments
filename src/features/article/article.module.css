@@ -1,0 +1,9 @@
+.container {
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid lightgrey;
+}
+
+.header {
+  font-size: x-large;
+}

@@ -1,0 +1,9 @@
+.container {
+  display: inline-block;
+  padding: 15px;
+  border-radius: 50%;
+}
+
+.content {
+  font-size: large;
+}

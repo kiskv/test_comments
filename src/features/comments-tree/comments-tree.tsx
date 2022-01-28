@@ -1,3 +1,6 @@
+import { Comment } from '../../components/comment';
 export const CommentsTree = () => {
-  return <div>Comments Tree</div>
+  return <div>
+      <Comment authorName='Кирилл Скворцов' timestamp={0} text='Привет, мир'/>
+    </div>
 }
