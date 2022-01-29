@@ -1,12 +1,12 @@
 .author {
-  display: inline-block;
-  font-weight: bold;
-  font-size: medium;
-  margin-right: 20px;
+    display: inline-block;
+    font-weight: bold;
+    font-size: medium;
+    margin-right: 20px;
 }
 
 .timestamp {
-  display: inline-block;
-  font-size: small;
-  color: gray;
+    display: inline-block;
+    font-size: small;
+    color: gray;
 }
