@@ -9,6 +9,8 @@ import {
 
 import { loggedUserSelector } from '../../users/users-slice';
 
+import styles from './editor.module.css';
+
 export const Editor: FC = () => {
     const dispatch = useAppDispatch();
 
@@ -71,15 +73,23 @@ export const Editor: FC = () => {
     return (
         <div>
             <div>
-                {editor.type === 'replyTo' && <span> Ответ {user?.name} </span>}
+                {editor.type === 'replyTo' && (
+                    <span> Ответ для {user?.name} </span>
+                )}
+            </div>
+            <textarea
+                className={styles.textArea}
+                value={input}
+                onChange={onChange}
+            />
+            <div className={styles.actions}>
+                <button type="submit" {...buttonProps} />
                 {(editor.type === 'replyTo' || editor.type === 'edit') && (
                     <button type="button" onClick={resetEditor}>
                         Отменить
                     </button>
                 )}
             </div>
-            <textarea value={input} onChange={onChange} />
-            <button type="submit" {...buttonProps} />
         </div>
     );
 };
