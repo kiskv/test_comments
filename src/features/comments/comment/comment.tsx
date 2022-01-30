@@ -4,6 +4,8 @@ import {
     commentsSelectors,
     Comment as CommentProps,
 } from '../comments-slice';
+
+import { usersSelectors } from '../../users/users-slice';
 import { useAppSelector, useAppDispatch } from '../../../hooks';
 
 import type { FC } from 'react';
@@ -13,10 +15,19 @@ import { Attribution } from '../../../components/attribution';
 
 import styles from './comment.module.css';
 
-export const Comment: FC<CommentProps> = ({ timestamp, text, id, childs }) => {
+export const Comment: FC<CommentProps> = ({
+    timestamp,
+    text,
+    id,
+    childs,
+    userId,
+}) => {
     const dispatch = useAppDispatch();
 
     const comments = useAppSelector(commentsSelectors.selectEntities);
+    const user = useAppSelector((state) =>
+        usersSelectors.selectById(state, userId)
+    );
 
     const onReplyClick = () => {
         dispatch(
@@ -49,9 +60,9 @@ export const Comment: FC<CommentProps> = ({ timestamp, text, id, childs }) => {
     return (
         <div className={styles.container}>
             <div className={styles.comment}>
-                <Avatar authorName="Тест Тестович" className={styles.avatar} />
+                <Avatar userName={user?.name} className={styles.avatar} />
                 <Attribution
-                    authorName="Тест Тестович"
+                    userName={user?.name}
                     timestamp={timestamp}
                     className={styles.attribution}
                 />

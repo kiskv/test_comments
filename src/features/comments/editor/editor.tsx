@@ -7,13 +7,14 @@ import {
     updateCommentText,
 } from '../comments-slice';
 
-const authorId = '1';
-const author = 'Тест Тестович';
+import { loggedUserSelector } from '../../users/users-slice';
 
 export const Editor: FC = () => {
     const dispatch = useAppDispatch();
 
     const editor = useAppSelector(editorSelector);
+
+    const user = useAppSelector(loggedUserSelector);
 
     const [input, setInput] = useState('');
 
@@ -34,7 +35,7 @@ export const Editor: FC = () => {
     const onReply = () => {
         dispatch(
             addComment({
-                authorId,
+                userId: user?.id ?? '',
                 text: input,
                 parentId: editor.commentId,
             })
@@ -70,7 +71,7 @@ export const Editor: FC = () => {
     return (
         <div>
             <div>
-                {editor.type === 'replyTo' && <span> Ответ {author} </span>}
+                {editor.type === 'replyTo' && <span> Ответ {user?.name} </span>}
                 {(editor.type === 'replyTo' || editor.type === 'edit') && (
                     <button type="button" onClick={resetEditor}>
                         Отменить

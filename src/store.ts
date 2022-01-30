@@ -1,9 +1,13 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import commentsReducer from './features/comments/comments-slice';
+import usersReducer from './features/users/users-slice';
+import articlesReducer from './features/articles/articles-slice';
 
 export const store = configureStore({
     reducer: {
         comments: commentsReducer,
+        users: usersReducer,
+        articles: articlesReducer,
     },
 });
 

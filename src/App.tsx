@@ -1,4 +1,4 @@
-import { Article } from './features/article';
+import { Article } from './features/articles';
 import { Comments } from './features/comments';
 import './app.css';
 

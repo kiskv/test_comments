@@ -11,7 +11,7 @@ import { RootState } from '../../store';
 type Id = string;
 
 export type Comment = {
-    authorId: string;
+    userId: string;
     id: Id;
     text: string;
     timestamp: number;
@@ -19,7 +19,7 @@ export type Comment = {
     parentId: Id | null;
 };
 
-type AddCommentPayload = Pick<Comment, 'authorId' | 'text' | 'parentId'>;
+type AddCommentPayload = Pick<Comment, 'userId' | 'text' | 'parentId'>;
 type UpdateCommentTextPayload = Pick<Comment, 'id' | 'text'>;
 type EditorState = {
     commentId: Id | null;
@@ -39,36 +39,36 @@ const emptyInitialState = commentsAdapter.getInitialState<{
 
 const exampleState = commentsAdapter.upsertMany(emptyInitialState, {
     comment001: {
-        authorId: 'author001',
+        userId: 'author001',
         id: 'comment001',
         text: 'Название напомнило прикольную игрушку от отечественных разрабов',
         timestamp: Date.now() - 4e5,
-        childs: ['comment002', 'comment003'],
+        childs: ['comment002'],
         parentId: null,
     },
     comment002: {
-        authorId: 'author002',
-        id: 'comment001',
+        userId: 'author002',
+        id: 'comment002',
         text: 'Да уж... Deus Ex Machina ему об отечественной игрушке напоминает... Что за бескультурное поколение растёт!',
         timestamp: Date.now() - 4e4,
         childs: ['comment003'],
         parentId: 'comment001',
     },
     comment003: {
-        authorId: 'author003',
-        id: 'comment001',
+        userId: 'author003',
+        id: 'comment003',
         text: 'Да это то понятно, самый популярный вариант. Как в той игре, где надо называть менее популярные варианты.',
         timestamp: Date.now() - 4e2,
         childs: [],
         parentId: 'comment002',
     },
     comment004: {
-        authorId: 'author004',
-        id: 'comment001',
+        userId: 'author004',
+        id: 'comment004',
         text: 'Я для Exmachina пару треков в свое время писал. Если вы играли то скорее всего катались под них ;)',
         timestamp: Date.now() - 4,
         childs: [],
-        parentId: 'comment002',
+        parentId: null,
     },
 });
 

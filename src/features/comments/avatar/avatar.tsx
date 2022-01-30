@@ -7,14 +7,17 @@ import ColorHash from 'color-hash';
 import styles from './avatar.module.css';
 
 type AvatarProps = {
-    authorName: string;
+    userName?: string;
     className?: string;
 };
 
-export const Avatar: FC<AvatarProps> = ({ authorName, className }) => {
+export const Avatar: FC<AvatarProps> = ({
+    userName = 'Неизвестный пользователь',
+    className,
+}) => {
     const colorHash = new ColorHash();
-    const authorColor = colorHash.hex(authorName);
-    const authorInitials = authorName
+    const userColor = colorHash.hex(userName);
+    const userInitials = userName
         .split(' ')
         .map((name) => name[0])
         .join('');
@@ -22,17 +25,17 @@ export const Avatar: FC<AvatarProps> = ({ authorName, className }) => {
     return (
         <div
             style={{
-                backgroundColor: `${authorColor}90`,
+                backgroundColor: `${userColor}90`,
             }}
             className={cn(className, styles.container)}
         >
             <span
                 style={{
-                    color: authorColor,
+                    color: userColor,
                 }}
                 className={styles.content}
             >
-                {authorInitials}
+                {userInitials}
             </span>
         </div>
     );
