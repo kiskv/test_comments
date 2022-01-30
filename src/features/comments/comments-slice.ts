@@ -2,6 +2,7 @@ import {
     createSlice,
     PayloadAction,
     createEntityAdapter,
+    createSelector,
 } from '@reduxjs/toolkit';
 
 import { nanoid } from 'nanoid';
@@ -166,9 +167,29 @@ export const commentsSlice = createSlice({
     },
 });
 
+const entitySelectors = commentsAdapter.getSelectors<RootState>(
+    (state) => state.comments
+);
+const editorSelector = (state: RootState) => state.comments.editor;
+const topLevelSelector = createSelector(
+    entitySelectors.selectAll,
+    (allComments) => allComments.filter((comment) => !comment.parentId)
+);
+export const commentChildsSelector = createSelector(
+    [entitySelectors.selectEntities, (state, commentId) => commentId],
+    (comments, commentId) => {
+        const childIds = comments[commentId]?.childs ?? [];
+        childIds.map((childId) => {
+            return comments[childId];
+        });
+    }
+);
+
 export const commentsSelectors = {
-    ...commentsAdapter.getSelectors<RootState>((state) => state.comments),
-    editorSelector: (state: RootState) => state.comments.editor,
+    ...entitySelectors,
+    editorSelector,
+    topLevelSelector,
+    commentChildsSelector,
 };
 
 export const { addComment, deleteComment, updateCommentText, setEditor } =

@@ -4,6 +4,8 @@ import cn from 'classnames';
 
 import ColorHash from 'color-hash';
 
+import { getUserInitials } from '../../../utils/get-user-initials';
+
 import styles from './avatar.module.css';
 
 type AvatarProps = {
@@ -11,16 +13,14 @@ type AvatarProps = {
     className?: string;
 };
 
+const colorHash = new ColorHash();
+
 export const Avatar: FC<AvatarProps> = ({
     userName = 'Неизвестный пользователь',
     className,
 }) => {
-    const colorHash = new ColorHash();
     const userColor = colorHash.hex(userName);
-    const userInitials = userName
-        .split(' ')
-        .map((name) => name[0])
-        .join('');
+    const userInitials = getUserInitials(userName);
 
     return (
         <div

@@ -4,11 +4,11 @@ import { commentsSelectors } from './comments-slice';
 import { useAppSelector } from '../../hooks';
 
 export const Comments = () => {
-    const comments = useAppSelector(commentsSelectors.selectAll)
-        .filter((comment) => !comment.parentId)
-        .map((comment) => {
+    const comments = useAppSelector(commentsSelectors.topLevelSelector).map(
+        (comment) => {
             return <Comment key={comment.id} {...comment} />;
-        });
+        }
+    );
 
     return (
         <div>
