@@ -166,11 +166,10 @@ export const commentsSlice = createSlice({
     },
 });
 
-export const commentsSelectors = commentsAdapter.getSelectors<RootState>(
-    (state) => state.comments
-);
-
-export const editorSelector = (state: RootState) => state.comments.editor;
+export const commentsSelectors = {
+    ...commentsAdapter.getSelectors<RootState>((state) => state.comments),
+    editorSelector: (state: RootState) => state.comments.editor,
+};
 
 export const { addComment, deleteComment, updateCommentText, setEditor } =
     commentsSlice.actions;

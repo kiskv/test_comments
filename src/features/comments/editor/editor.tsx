@@ -2,21 +2,24 @@ import { FC, FormEvent, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '../../../hooks';
 import {
     addComment,
-    editorSelector,
+    commentsSelectors,
     setEditor,
     updateCommentText,
 } from '../comments-slice';
 
-import { loggedUserSelector } from '../../users/users-slice';
+import { usersSelectors } from '../../users/users-slice';
 
 import styles from './editor.module.css';
 
 export const Editor: FC = () => {
     const dispatch = useAppDispatch();
 
-    const editor = useAppSelector(editorSelector);
+    const editor = useAppSelector(commentsSelectors.editorSelector);
 
-    const user = useAppSelector(loggedUserSelector);
+    const loggedUser = useAppSelector(usersSelectors.loggedUserSelector);
+    const replyUser = useAppSelector((state) =>
+        usersSelectors.userByCommentIdSelector(state, editor.commentId ?? '')
+    );
 
     const [input, setInput] = useState('');
 
@@ -37,7 +40,7 @@ export const Editor: FC = () => {
     const onReply = () => {
         dispatch(
             addComment({
-                userId: user?.id ?? '',
+                userId: loggedUser?.id ?? '',
                 text: input,
                 parentId: editor.commentId,
             })
@@ -74,7 +77,7 @@ export const Editor: FC = () => {
         <div>
             <div>
                 {editor.type === 'replyTo' && (
-                    <span> Ответ для {user?.name} </span>
+                    <span> Ответ для: {replyUser?.name} </span>
                 )}
             </div>
             <textarea

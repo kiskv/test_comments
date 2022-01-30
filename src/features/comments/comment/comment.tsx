@@ -28,6 +28,8 @@ export const Comment: FC<CommentProps> = ({
     const user = useAppSelector((state) =>
         usersSelectors.selectById(state, userId)
     );
+    const loggedUser = useAppSelector(usersSelectors.loggedUserSelector);
+    const canEdit = user?.id === loggedUser?.id;
 
     const onReplyClick = () => {
         dispatch(
@@ -69,8 +71,12 @@ export const Comment: FC<CommentProps> = ({
                 <span className={styles.text}>{text}</span>
                 <div className={styles.actions}>
                     <div onClick={onReplyClick}>Ответить</div>
-                    <div onClick={onEditClick}>Редактировать</div>
-                    <div onClick={onDeleteClick}>Удалить</div>
+                    {canEdit && (
+                        <>
+                            <div onClick={onEditClick}>Редактировать</div>
+                            <div onClick={onDeleteClick}>Удалить</div>
+                        </>
+                    )}
                 </div>
             </div>
             <div className={styles.childComments}>{childComments}</div>

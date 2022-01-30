@@ -2,6 +2,8 @@ import { createSlice, createEntityAdapter } from '@reduxjs/toolkit';
 
 import { RootState } from '../../store';
 
+import { commentsSelectors } from '../comments/comments-slice';
+
 type User = {
     id: string;
     name: string;
@@ -36,12 +38,16 @@ const exampleState = usersAdapter.upsertMany(emptyInitialState, {
     },
 });
 
-export const usersSelectors = usersAdapter.getSelectors<RootState>(
-    (state) => state.users
-);
-
-export const loggedUserSelector = (state: RootState) =>
-    usersSelectors.selectById(state, state.users.logged);
+export const usersSelectors = {
+    ...usersAdapter.getSelectors<RootState>((state) => state.users),
+    loggedUserSelector: (state: RootState) =>
+        usersSelectors.selectById(state, state.users.logged),
+    userByCommentIdSelector: (state: RootState, commentId: Id) =>
+        usersSelectors.selectById(
+            state,
+            commentsSelectors.selectById(state, commentId)?.userId ?? ''
+        ),
+};
 
 export const usersSlice = createSlice({
     name: 'users',

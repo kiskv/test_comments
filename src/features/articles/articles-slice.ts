@@ -36,11 +36,10 @@ export const articlesSlice = createSlice({
     reducers: {},
 });
 
-const articlesSelectors = articlesAdapter.getSelectors<RootState>(
-    (state) => state.articles
-);
-
-export const currentArticleSelector = (state: RootState) =>
-    articlesSelectors.selectById(state, state.articles.current);
+export const articlesSelectors = {
+    ...articlesAdapter.getSelectors<RootState>((state) => state.articles),
+    currentArticleSelector: (state: RootState) =>
+        articlesSelectors.selectById(state, state.articles.current),
+};
 
 export default articlesSlice.reducer;

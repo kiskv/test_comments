@@ -1,13 +1,13 @@
 import { Attribution } from '../../components/attribution';
 
-import { currentArticleSelector } from './articles-slice';
+import { articlesSelectors } from './articles-slice';
 import { usersSelectors } from '../users/users-slice';
 import { useAppSelector } from '../../hooks';
 
 import styles from './article.module.css';
 
 export const Article = () => {
-    const article = useAppSelector(currentArticleSelector);
+    const article = useAppSelector(articlesSelectors.currentArticleSelector);
     const user = useAppSelector((state) =>
         usersSelectors.selectById(state, article?.userId ?? '')
     );
