@@ -1,7 +1,7 @@
 import { Comment } from './comment';
-import { Reply } from './reply';
+import { Editor } from './editor';
 import { commentsSelectors } from './comments-slice';
-import { useAppSelector, useAppDispatch } from '../../hooks';
+import { useAppSelector } from '../../hooks';
 
 export const Comments = () => {
     const comments = useAppSelector(commentsSelectors.selectAll)
@@ -13,7 +13,7 @@ export const Comments = () => {
     return (
         <div>
             {comments}
-            <Reply />
+            <Editor />
         </div>
     );
 };

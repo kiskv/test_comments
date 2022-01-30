@@ -1,5 +1,5 @@
 import {
-    setCurrentReplyId,
+    setEditor,
     deleteComment,
     commentsSelectors,
     Comment as CommentProps,
@@ -18,11 +18,25 @@ export const Comment: FC<CommentProps> = ({ timestamp, text, id, childs }) => {
 
     const comments = useAppSelector(commentsSelectors.selectEntities);
 
-    const onReply = () => {
-        dispatch(setCurrentReplyId(id));
+    const onReplyClick = () => {
+        dispatch(
+            setEditor({
+                commentId: id,
+                type: 'replyTo',
+            })
+        );
     };
 
-    const onDelete = () => {
+    const onEditClick = () => {
+        dispatch(
+            setEditor({
+                commentId: id,
+                type: 'edit',
+            })
+        );
+    };
+
+    const onDeleteClick = () => {
         dispatch(deleteComment(id));
     };
 
@@ -43,12 +57,11 @@ export const Comment: FC<CommentProps> = ({ timestamp, text, id, childs }) => {
                 />
                 <span className={styles.text}>{text}</span>
                 <div className={styles.actions}>
-                    <div onClick={onReply}>Ответить</div>
-                    <div>Редактировать</div>
-                    <div onClick={onDelete}>Удалить</div>
+                    <div onClick={onReplyClick}>Ответить</div>
+                    <div onClick={onEditClick}>Редактировать</div>
+                    <div onClick={onDeleteClick}>Удалить</div>
                 </div>
             </div>
-
             <div className={styles.childComments}>{childComments}</div>
         </div>
     );

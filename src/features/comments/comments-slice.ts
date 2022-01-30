@@ -21,13 +21,20 @@ export type Comment = {
 
 type AddCommentPayload = Pick<Comment, 'authorId' | 'text' | 'parentId'>;
 type UpdateCommentTextPayload = Pick<Comment, 'id' | 'text'>;
+type EditorState = {
+    commentId: Id | null;
+    type: 'new' | 'replyTo' | 'edit';
+};
 
 const commentsAdapter = createEntityAdapter<Comment>();
 
 const initialState = commentsAdapter.getInitialState<{
-    currentReplyId: Id | null;
+    editor: EditorState;
 }>({
-    currentReplyId: null,
+    editor: {
+        commentId: null,
+        type: 'new',
+    },
 });
 
 export const commentsSlice = createSlice({
@@ -36,19 +43,37 @@ export const commentsSlice = createSlice({
     // The `reducers` field lets us define reducers and generate associated actions
     reducers: {
         deleteComment(state, action: PayloadAction<Id>) {
-            const parentId = state.entities[action.payload]?.parentId;
+            const comment = state.entities[action.payload];
 
-            if (parentId) {
-                const parentChildren = state.entities[parentId]?.childs ?? [];
-                // remove link from parent children
+            if (!comment) return;
+
+            if (comment.childs.length > 0) {
                 commentsAdapter.updateOne(state, {
-                    id: parentId,
+                    id: action.payload,
                     changes: {
-                        childs: parentChildren.filter(
-                            (id) => id !== action.payload
-                        ),
+                        text: 'Комментарий удалён по просьбе пользователя.',
                     },
                 });
+
+                return;
+            }
+
+            const { parentId } = comment;
+
+            if (parentId) {
+                const parentComment = state.entities[parentId];
+
+                if (parentComment) {
+                    // remove link from parent children
+                    commentsAdapter.updateOne(state, {
+                        id: parentId,
+                        changes: {
+                            childs: parentComment.childs.filter(
+                                (id) => id !== action.payload
+                            ),
+                        },
+                    });
+                }
             }
 
             commentsAdapter.removeOne(state, action.payload);
@@ -87,6 +112,7 @@ export const commentsSlice = createSlice({
                 commentsAdapter.addOne(state, action.payload);
             },
         },
+
         updateCommentText(
             state,
             action: PayloadAction<UpdateCommentTextPayload>
@@ -98,11 +124,9 @@ export const commentsSlice = createSlice({
                 },
             });
         },
-        setCurrentReplyId(state, action: PayloadAction<Id>) {
-            state.currentReplyId = action.payload;
-        },
-        cancelReply(state) {
-            state.currentReplyId = null;
+
+        setEditor(state, action: PayloadAction<EditorState>) {
+            state.editor = action.payload;
         },
     },
 });
@@ -111,15 +135,9 @@ export const commentsSelectors = commentsAdapter.getSelectors<RootState>(
     (state) => state.comments
 );
 
-export const currentReplyIdSelector = (state: RootState) =>
-    state.comments.currentReplyId;
+export const editorSelector = (state: RootState) => state.comments.editor;
 
-export const {
-    addComment,
-    deleteComment,
-    updateCommentText,
-    setCurrentReplyId,
-    cancelReply,
-} = commentsSlice.actions;
+export const { addComment, deleteComment, updateCommentText, setEditor } =
+    commentsSlice.actions;
 
 export default commentsSlice.reducer;
