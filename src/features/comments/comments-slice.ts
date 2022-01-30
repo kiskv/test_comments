@@ -8,13 +8,15 @@ import { nanoid } from 'nanoid';
 
 import { RootState } from '../../store';
 
-type Comment = {
+type Id = string;
+
+export type Comment = {
     authorId: string;
-    id: string;
+    id: Id;
     text: string;
     timestamp: number;
-    children: string[];
-    parentId?: string;
+    childs: string[];
+    parentId: Id | null;
 };
 
 type AddCommentPayload = Pick<Comment, 'authorId' | 'text' | 'parentId'>;
@@ -22,23 +24,27 @@ type UpdateCommentTextPayload = Pick<Comment, 'id' | 'text'>;
 
 const commentsAdapter = createEntityAdapter<Comment>();
 
-const initialState = commentsAdapter.getInitialState();
+const initialState = commentsAdapter.getInitialState<{
+    currentReplyId: Id | null;
+}>({
+    currentReplyId: null,
+});
 
 export const commentsSlice = createSlice({
     name: 'comments',
     initialState,
     // The `reducers` field lets us define reducers and generate associated actions
     reducers: {
-        deleteComment(state, action: PayloadAction<Comment['id']>) {
+        deleteComment(state, action: PayloadAction<Id>) {
             const parentId = state.entities[action.payload]?.parentId;
 
             if (parentId) {
-                const parentChildren = state.entities[parentId]?.children ?? [];
+                const parentChildren = state.entities[parentId]?.childs ?? [];
                 // remove link from parent children
                 commentsAdapter.updateOne(state, {
                     id: parentId,
                     changes: {
-                        children: parentChildren.filter(
+                        childs: parentChildren.filter(
                             (id) => id !== action.payload
                         ),
                     },
@@ -58,7 +64,7 @@ export const commentsSlice = createSlice({
                         ...payload,
                         id,
                         timestamp,
-                        children: [],
+                        childs: [],
                     },
                 };
             },
@@ -67,13 +73,13 @@ export const commentsSlice = createSlice({
 
                 if (parentId) {
                     const parentChildren =
-                        state.entities[parentId]?.children ?? [];
+                        state.entities[parentId]?.childs ?? [];
 
                     // Add this comment to parent entity children
                     commentsAdapter.updateOne(state, {
                         id: parentId,
                         changes: {
-                            children: [...parentChildren, id],
+                            childs: [...parentChildren, id],
                         },
                     });
                 }
@@ -92,6 +98,12 @@ export const commentsSlice = createSlice({
                 },
             });
         },
+        setCurrentReplyId(state, action: PayloadAction<Id>) {
+            state.currentReplyId = action.payload;
+        },
+        cancelReply(state) {
+            state.currentReplyId = null;
+        },
     },
 });
 
@@ -99,7 +111,15 @@ export const commentsSelectors = commentsAdapter.getSelectors<RootState>(
     (state) => state.comments
 );
 
-export const { addComment, deleteComment, updateCommentText } =
-    commentsSlice.actions;
+export const currentReplyIdSelector = (state: RootState) =>
+    state.comments.currentReplyId;
+
+export const {
+    addComment,
+    deleteComment,
+    updateCommentText,
+    setCurrentReplyId,
+    cancelReply,
+} = commentsSlice.actions;
 
 export default commentsSlice.reducer;

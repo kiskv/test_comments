@@ -1,4 +1,7 @@
 .container {
+}
+
+.comment {
     display: grid;
     grid-template-columns: 0.5fr 4.1fr 1fr;
     grid-template-rows: 0.6fr 1.4fr;
@@ -32,4 +35,8 @@
 .actions > * {
     cursor: pointer;
     display: table;
+}
+
+.childComments {
+    margin-left: 30px;
 }
