@@ -28,7 +28,7 @@ type EditorState = {
 
 const commentsAdapter = createEntityAdapter<Comment>();
 
-const initialState = commentsAdapter.getInitialState<{
+const emptyInitialState = commentsAdapter.getInitialState<{
     editor: EditorState;
 }>({
     editor: {
@@ -37,9 +37,44 @@ const initialState = commentsAdapter.getInitialState<{
     },
 });
 
+const exampleState = commentsAdapter.upsertMany(emptyInitialState, {
+    comment001: {
+        authorId: 'author001',
+        id: 'comment001',
+        text: 'Название напомнило прикольную игрушку от отечественных разрабов',
+        timestamp: Date.now() - 4e5,
+        childs: ['comment002', 'comment003'],
+        parentId: null,
+    },
+    comment002: {
+        authorId: 'author002',
+        id: 'comment001',
+        text: 'Да уж... Deus Ex Machina ему об отечественной игрушке напоминает... Что за бескультурное поколение растёт!',
+        timestamp: Date.now() - 4e4,
+        childs: ['comment003'],
+        parentId: 'comment001',
+    },
+    comment003: {
+        authorId: 'author003',
+        id: 'comment001',
+        text: 'Да это то понятно, самый популярный вариант. Как в той игре, где надо называть менее популярные варианты.',
+        timestamp: Date.now() - 4e2,
+        childs: [],
+        parentId: 'comment002',
+    },
+    comment004: {
+        authorId: 'author004',
+        id: 'comment001',
+        text: 'Я для Exmachina пару треков в свое время писал. Если вы играли то скорее всего катались под них ;)',
+        timestamp: Date.now() - 4,
+        childs: [],
+        parentId: 'comment002',
+    },
+});
+
 export const commentsSlice = createSlice({
     name: 'comments',
-    initialState,
+    initialState: exampleState,
     // The `reducers` field lets us define reducers and generate associated actions
     reducers: {
         deleteComment(state, action: PayloadAction<Id>) {
