@@ -1,3 +1,12 @@
+Задача номер 1:
+Приложение с деревом комментариев и возможностью CRUD-операций над ним.
+Реализовано в виде нормализованного рекурсивного дерева со связанными списками.
+
+Задача номер 2:
+src/utils/reverse-tail.ts
+тест
+src/utils/**tests**/reverse-tail.test.ts
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) template.
 
 ## Available Scripts
