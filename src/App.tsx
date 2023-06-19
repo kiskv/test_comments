@@ -1,6 +1,6 @@
 import { Article } from './features/articles';
 import { Comments } from './features/comments';
-import './app.css';
+import './App.css';
 
 export const App = () => {
     return (
